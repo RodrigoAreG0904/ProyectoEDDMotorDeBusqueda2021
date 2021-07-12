@@ -23,6 +23,7 @@ public class MarcoTexto extends JFrame{
     setVisible(true);
   }
 
+
   public void cerrar(){
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
   }
