@@ -53,13 +53,10 @@ class LaminaTexto2 extends JPanel{
           System.out.println("El campo es invalido");
         }else{
           LectorDeTextos ldt = new LectorDeTextos();
-          //busca la carpeta textos
-          /**File currentDirFile = new File(".");
-          String path = currentDirFile.getAbsolutePath();
-          String rightPath = path.replace(".", "Textos");*/
           File folder = new File(ruta);
           try{
-            ldt.imprimeArchivos(folder);
+            ldt.cargaArchivos(folder);
+            ldt.imprimeLista();
           } catch(IOException ioe){
             System.out.println("Ha habido un error.");
           }
