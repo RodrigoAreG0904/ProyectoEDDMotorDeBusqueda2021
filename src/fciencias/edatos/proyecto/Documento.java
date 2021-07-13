@@ -1,6 +1,5 @@
-package fciencias.edatos.proyecto;
-
 public class Documento{
+
   private String nombre;
   private String cadena;
 
@@ -23,9 +22,5 @@ public class Documento{
 
   public void setCadena(String nuevaCadena){
     this.cadena = nuevaCadena;
-  }
-
-  public void concatenaCadena(String agregar){
-    this.cadena = cadena + " " + agregar;
   }
 }
