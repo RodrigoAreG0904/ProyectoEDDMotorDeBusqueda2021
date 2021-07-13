@@ -49,14 +49,16 @@ class LaminaTexto2 extends JPanel{
       @Override
       public void actionPerformed(ActionEvent e){
         String ruta = campo2.getText();
-        if(ruta == null || ruta ==""){
-          System.out.println("El campo es invalido");
+        if(ruta.equals("")){
+          add(texto2);
         }else{
           LectorDeTextos ldt = new LectorDeTextos();
           File folder = new File(ruta);
           try{
+            add(ldt.barra);
             ldt.cargaArchivos(folder);
             ldt.imprimeLista();
+            add(ldt.completado);
           } catch(IOException ioe){
             System.out.println("Ha habido un error.");
           }
@@ -64,6 +66,7 @@ class LaminaTexto2 extends JPanel{
       }
     });
     add(boton2);
+
   }
 }
 /**
