@@ -60,4 +60,11 @@ public class LectorDeTextos{
     }
   }
 
+  public LinkedList<Documento> getLista(){
+    return this.listaDocumento;
+  }
+
+  public void setLista(LinkedList<Documento> nuevaLista){
+    this.listaDocumento = nuevaLista;
+  }
 }
