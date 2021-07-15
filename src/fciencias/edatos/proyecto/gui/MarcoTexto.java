@@ -46,13 +46,15 @@ public class MarcoTexto extends JFrame{
       public void actionPerformed(ActionEvent e){
         String consulta = campo1.getText();
         LinkedList<Documento> lista = lector.getLista();
-    
+
         Consultas a = new Consultas();
         for(int i = 0; i<lista.size(); i++){
           Documento documento = lista.get(i);
           String cadena = documento.getCadena();
+          System.out.println(documento.getNombre());
           a.hacerConsulta(consulta, cadena);
         }
+        System.out.println();
       }
     });
 

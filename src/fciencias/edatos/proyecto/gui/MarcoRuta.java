@@ -4,7 +4,6 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.io.File;
-import fciencias.edatos.proyecto.gui.LaminaTexto2;
 import fciencias.edatos.proyecto.LectorDeTextos;
 import java.io.IOException;
 import java.util.LinkedList;

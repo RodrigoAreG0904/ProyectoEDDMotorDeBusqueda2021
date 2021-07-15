@@ -5,6 +5,9 @@ public class Consultas{
   public Consultas(){}
 
   public void hacerConsulta(String consulta, String documento){
+    //borramos caracteres ¿ ¡ ? ! , . ; :
+    documento = documento.replaceAll("[¿¡?!,.;:]*", "");
+
     String[] palabrasEnConsulta = consulta.split("\\s+"); //[Hola, mi, nombre]
     String[] palabrasEnDocumento = documento.split("\\s+"); //[hola, ..]
 
@@ -24,11 +27,13 @@ public class Consultas{
   }
 
   public void imprimir(String[] consulta, String[] documento, int[] palabrasContadas){
+    /** imprime todo el documento en una cadena
     String completa = "";
     for(String e : documento){
       completa = completa + e + " ";
     }
     System.out.print(completa + "\n");
+    **/
 
     for(int i = 0; i<consulta.length; i++){
       System.out.println(consulta[i] + ": " +palabrasContadas[i]);
