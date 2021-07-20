@@ -41,22 +41,21 @@ public class MarcoRuta extends JFrame{
     laminaTexto2.add(campo2);
 
     //el boton que al apretarlo dara la ruta de la carpeta
-    JButton boton2 = new JButton("Ruta");
+    JButton boton2 = new JButton("Cargar archivos");
 
     boton2.addActionListener(new ActionListener(){
       @Override
       public void actionPerformed(ActionEvent e){
+        LinkedList<Documento> lista = ldt.getLista();
+        lista.clear(); //limpiamos la lista para cargar solo una vez los archivos de una carpeta 
         String ruta = campo2.getText();
-        if(ruta.equals("")){
-          laminaTexto2.add(texto2);
+        if(ruta.equals("") || ruta == null){
+          System.out.println("Debes de escribir una ruta valida");
         }else{
           File folder = new File(ruta);
           try{
             laminaTexto2.add(ldt.barra);
             ldt.cargaArchivos(folder);
-            //ldt.imprimeLista();
-            //
-            laminaTexto2.add(ldt.completado);
           } catch(IOException ioe){
             System.out.println("Ha habido un error.");
           }
@@ -79,76 +78,3 @@ public class MarcoRuta extends JFrame{
     return this.ldt;
   }
 }
-
-/**
-class LaminaTexto2 extends JPanel{
-
-  private LectorDeTextos ldt = new LectorDeTextos();
-
-  public LaminaTexto2(){
-    //creamos una etiqueta para el espacio donde van a escribir
-    JLabel texto2 = new JLabel("Especificar ruta de carpeta donde quieras buscar: ");
-    add(texto2);
-
-    // un campo de texto donde van a poner la ruta
-    JTextField campo2 = new JTextField(80);
-    add(campo2);
-
-    //el boton que al apretarlo dara la ruta de la carpeta
-    JButton boton2 = new JButton("Ruta");
-
-    boton2.addActionListener(new ActionListener(){
-      @Override
-      public void actionPerformed(ActionEvent e){
-        String ruta = campo2.getText();
-        if(ruta.equals("")){
-          add(texto2);
-        }else{
-          File folder = new File(ruta);
-          try{
-            add(ldt.barra);
-            ldt.cargaArchivos(folder);
-            //ldt.imprimeLista();
-            //
-            add(ldt.completado);
-          } catch(IOException ioe){
-            System.out.println("Ha habido un error.");
-          }
-        }
-      }
-    });
-    add(boton2);
-
-  }
-
-  public LectorDeTextos getLector(){
-    return this.ldt;
-  }
-
-  //hagamos un setLector()
-}
-/**
-class AccionRuta implements ActionListener{
-  @Override
-  public void actionPerformed(ActionEvent e){
-    String ruta = miLamina.campo2.getText();
-    if(ruta == null || ruta ==""){
-      System.out.println("El campo es invalido");
-    }else{
-      System.out.println(ruta);
-    }
-
-    LectorDeTextos ldt = new LectorDeTextos();
-    //busca la carpeta textos
-    File currentDirFile = new File(".");
-    String path = currentDirFile.getAbsolutePath();
-    String rightPath = path.replace(".", "Textos");
-    File folder = new File(rightPath);
-    /**try{
-      ldt.imprimeArchivos(folder);
-    } catch(IOException ioe){
-      System.out.println("Ha habido un error.");
-    }
-
-  }
-}*/

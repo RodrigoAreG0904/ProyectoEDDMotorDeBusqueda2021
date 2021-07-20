@@ -30,6 +30,8 @@ public class MarcoTexto extends JFrame{
     JLabel texto1 = new JLabel("Consulta: ");
     miLamina.add(texto1);
 
+    //JLabel textoError = new JLabel("Cadena invalida, la consulta debe contener menos de 200 caracteres");
+
     // un campo de texto donde van a hacer su consulta
     JTextField campo1 = new JTextField(80);
     miLamina.add(campo1);
@@ -37,28 +39,39 @@ public class MarcoTexto extends JFrame{
     //el boton que al apretarlo pedira los archivos mas parecidos, hasta ahora solo imprime algo en consola xd
     JButton boton1 = new JButton("Consultar");
 
-    //DameTexto miEvento = new DameTexto();
-
-    //boton1.addActionListener(miEvento);
+    JButton boton2 = new JButton("Ver Historial");
 
     boton1.addActionListener(new ActionListener(){
       @Override
       public void actionPerformed(ActionEvent e){
         String consulta = campo1.getText();
-        LinkedList<Documento> lista = lector.getLista();
+        if(consulta.length() > 200){
+          System.out.println("Cadena invalida, la consulta debe contener menos de 200 caracteres");
+        } else{
+          LinkedList<Documento> lista = lector.getLista();
 
-        Consultas a = new Consultas();
-        for(int i = 0; i<lista.size(); i++){
-          Documento documento = lista.get(i);
-          String cadena = documento.getCadena();
-          System.out.println(documento.getNombre());
-          a.hacerConsulta(consulta, cadena);
+          Consultas a = new Consultas();
+          for(int i = 0; i<lista.size(); i++){
+            Documento documento = lista.get(i);
+            String cadena = documento.getCadena();
+            System.out.println(documento.getNombre());
+            a.hacerConsulta(consulta, cadena);
+          }
+          System.out.println();
         }
-        System.out.println();
+      }
+    });
+
+    boton2.addActionListener(new ActionListener(){
+      @Override
+      public void actionPerformed(ActionEvent e){
+        MarcoHistorial historial = new MarcoHistorial();
+        historial.ocultar();
       }
     });
 
     miLamina.add(boton1);
+    miLamina.add(boton2);
 
     this.add(miLamina);
     this.setVisible(true);
@@ -80,47 +93,3 @@ public class MarcoTexto extends JFrame{
     this.lector = nuevoLector;
   }
 }
-
-  /**public void setConsulta(String nuevaConsulta){
-    this.consulta = nuevaConsulta;
-  }
-}
-
-/**
-class LaminaTexto extends JPanel{
-  public LaminaTexto(){
-    //creamos una etiqueta para el espacio donde van a escribir
-    JLabel texto1 = new JLabel("Consulta: ");
-    add(texto1);
-
-    // un campo de texto donde van a hacer su consulta
-    JTextField campo1 = new JTextField(80);
-    add(campo1);
-
-    //el boton que al apretarlo pedira los archivos mas parecidos, hasta ahora solo imprime algo en consola xd
-    JButton boton1 = new JButton("Consutar");
-
-    //DameTexto miEvento = new DameTexto();
-
-    //boton1.addActionListener(miEvento);
-
-    boton1.addActionListener(new ActionListener(){
-      @Override
-      public void actionPerformed(ActionEvent e){
-        String consulta = campo1.getText();
-        System.out.println(consulta);
-      }
-    });
-
-    add(boton1);
-  }
-}
-
-/**
-class DameTexto implements ActionListener{
-  @Override
-  public void actionPerformed(ActionEvent e){
-    String consulta = campo1.getText();
-    return consulta;
-  }
-}**/

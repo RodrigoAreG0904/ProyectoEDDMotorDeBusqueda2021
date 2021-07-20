@@ -18,7 +18,6 @@ public class LectorDeTextos{
 
   private LinkedList<Documento> listaDocumento = new LinkedList<>();
   public JProgressBar barra = new JProgressBar();
-  public JLabel completado = new JLabel("Se han cargado todos los archivos");
 
   public void cargaArchivos(File folder) throws IOException{
     String path = folder.getAbsolutePath();
