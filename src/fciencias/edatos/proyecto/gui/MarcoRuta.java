@@ -8,6 +8,8 @@ import fciencias.edatos.proyecto.LectorDeTextos;
 import java.io.IOException;
 import java.util.LinkedList;
 import fciencias.edatos.proyecto.Documento;
+import fciencias.edatos.proyecto.gui.MarcoError;
+import fciencias.edatos.proyecto.gui.MarcoExito;
 
 public class MarcoRuta extends JFrame{
 
@@ -46,18 +48,25 @@ public class MarcoRuta extends JFrame{
     boton2.addActionListener(new ActionListener(){
       @Override
       public void actionPerformed(ActionEvent e){
-        LinkedList<Documento> lista = ldt.getLista();
-        lista.clear(); //limpiamos la lista para cargar solo una vez los archivos de una carpeta 
+        LinkedList<Documento> lista = ldt.getListaDocumento();
+        lista.clear(); //limpiamos la lista para cargar solo una vez los archivos de una carpeta
         String ruta = campo2.getText();
         if(ruta.equals("") || ruta == null){
-          System.out.println("Debes de escribir una ruta valida");
+          MarcoError error = new MarcoError("Debes de escribir una ruta valida");
+          error.ocultar();
         }else{
           File folder = new File(ruta);
           try{
             laminaTexto2.add(ldt.barra);
             ldt.cargaArchivos(folder);
+            ldt.cargaPalabras();
+            ldt.imprimeNumDoc();
+            MarcoExito exito = new MarcoExito("Los archivos se han cargado con exito");
+            exito.ocultar();
           } catch(IOException ioe){
             System.out.println("Ha habido un error.");
+            MarcoError error = new MarcoError("Ha habido un problema de entrada y salida de archivos");
+            error.ocultar();
           }
         }
       }

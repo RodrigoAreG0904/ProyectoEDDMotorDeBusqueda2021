@@ -7,6 +7,8 @@ import java.util.LinkedList;
 import fciencias.edatos.proyecto.Documento;
 import fciencias.edatos.proyecto.LectorDeTextos;
 import fciencias.edatos.proyecto.Consultas;
+import fciencias.edatos.proyecto.PalabraContada;
+import fciencias.edatos.proyecto.gui.MarcoError;
 
 public class MarcoTexto extends JFrame{
 
@@ -46,19 +48,20 @@ public class MarcoTexto extends JFrame{
       public void actionPerformed(ActionEvent e){
         String consulta = campo1.getText();
         if(consulta.length() > 200){
-          System.out.println("Cadena invalida, la consulta debe contener menos de 200 caracteres");
+          MarcoError error = new MarcoError("Cadena invalida, la consulta debe contener menos de 200 caracteres");
+          error.ocultar();
         } else{
-          LinkedList<Documento> lista = lector.getLista();
-
-          Consultas a = new Consultas();
-          for(int i = 0; i<lista.size(); i++){
-            Documento documento = lista.get(i);
-            String cadena = documento.getCadena();
-            System.out.println(documento.getNombre());
-            a.hacerConsulta(consulta, cadena);
+          LinkedList<Documento> listaDocumento = lector.getListaDocumento();
+          LinkedList<PalabraContada> listaPalabra = lector.getListaPalabras();
+          if(listaDocumento.isEmpty() || listaPalabra.isEmpty()){
+            MarcoError error = new MarcoError("Los documentos no se han cargado correctamente");
+            error.ocultar();
+          } else{
+            Consultas a = new Consultas();
+            a.hacerConsulta(consulta, listaDocumento, listaPalabra);
           }
-          System.out.println();
         }
+        System.out.println();
       }
     });
 
