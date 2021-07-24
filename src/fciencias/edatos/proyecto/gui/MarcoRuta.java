@@ -8,8 +8,6 @@ import fciencias.edatos.proyecto.LectorDeTextos;
 import java.io.IOException;
 import java.util.LinkedList;
 import fciencias.edatos.proyecto.Documento;
-import fciencias.edatos.proyecto.gui.MarcoError;
-import fciencias.edatos.proyecto.gui.MarcoExito;
 
 public class MarcoRuta extends JFrame{
 

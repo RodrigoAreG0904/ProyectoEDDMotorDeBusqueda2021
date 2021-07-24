@@ -9,7 +9,7 @@ public class Consultas{
 
   public Consultas(){}
 
-  public void hacerConsulta(String consulta, LinkedList<Documento> lista, LinkedList<PalabraContada> listaPalabra){
+  public LinkedList<Documento> hacerConsulta(String consulta, LinkedList<Documento> lista, LinkedList<PalabraContada> listaPalabra){
 
     String[] palabrasEnConsulta = limpiaCadena(consulta);
 
@@ -19,65 +19,66 @@ public class Consultas{
       String cadena = doc.getCadena();
 
       String[] palabrasEnDocumento = limpiaCadena(cadena);
-
       int[] palabrasContadas = new int[palabrasEnConsulta.length];
-
       cuentaPalabras(palabrasEnConsulta,palabrasEnDocumento,palabrasContadas);
-      /**
-      int contador = 0;
-      for(int j = 0; j<palabrasEnConsulta.length; j++){
-        for(int k = 0; k<palabrasEnDocumento.length; k++){
-          if(palabrasEnConsulta[j].equalsIgnoreCase(palabrasEnDocumento[k])){
-            contador++;
-          }
-        }
-        palabrasContadas[j] = contador; //se cuenta cuantas veces aparecio una palabra consultada
-        contador = 0;
-      }**/
+
+      String palabra = "";
+      PalabraContada palabraBuscada = new PalabraContada("",0,0);
+      int numeroDoc = 0;
+
       double enConsulta=0;
       for(int j = 0; j<palabrasEnConsulta.length; j++){
-        String palabra = palabrasEnConsulta[j];
-        PalabraContada palabraBuscada = getPalabra(palabra, listaPalabra);
-        int numeroDoc = palabraBuscada.getNumeroDoc();
-
+        palabra = palabrasEnConsulta[j];
+        palabraBuscada = getPalabra(palabra, listaPalabra);
+        if(palabraBuscada == null){
+          numeroDoc = 0;
+        } else{
+          numeroDoc = palabraBuscada.getNumeroDoc();
+        }
         enConsulta = enConsulta + similitud(palabrasContadas[j], numeroDoc, tamanio);
       }
-      //En esta parte del codigo hay un error y se traba mi compu, pero no se cual error es.
-      /**
+
       LinkedList<String> sinRepetir = new LinkedList<>();
       //si hay palabras repetidas no las tomamos en cuenta, solo queremos saber
       //en cuantos documentos se encuentra la palabra, no cuantas veces aparece
-      for(int k=0; k<palabrasEnDocumento.length; i++){
-        String palabra = palabrasEnDocumento[k];
+      for(int k=0; k<palabrasEnDocumento.length; k++){
+        palabra = palabrasEnDocumento[k];
         if(!sinRepetir.contains(palabra)){
           sinRepetir.add(palabra);
         }
-      }**/
-
-
-      /**
-      String docSinPalabrasRepetidas = "";
-      for(String s: sinRepetir){
-        docSinPalabrasRepetidas = docSinPalabrasRepetidas + s;
       }
+
+      String docSinPalabrasRepetidas = "";
+      for(int m = 0; m<sinRepetir.size(); m++){
+        String s = sinRepetir.get(m);
+        docSinPalabrasRepetidas = s+ " " +docSinPalabrasRepetidas;
+      }
+
       String[] palabrasSinConsultar = docSinPalabrasRepetidas.split("\\s+");
-      int[] palabrasSinConsultarContadas = new int[sinRepetir.size()];
+      int[] palabrasSinConsultarContadas = new int[palabrasSinConsultar.length];
 
       cuentaPalabras(palabrasSinConsultar,palabrasEnDocumento,palabrasSinConsultarContadas);
 
       double sinConsulta=0;
       for(int l = 0; l<palabrasSinConsultar.length; l++){
-        String palabra = palabrasSinConsultar[l];
-        PalabraContada palabraBuscada = getPalabra(palabra, listaPalabra);
-        int numeroDocum = palabraBuscada.getNumeroDoc();
-
-        sinConsulta = sinConsulta + similitud(palabrasSinConsultarContadas[l], numeroDocum, tamanio);
+        palabra = palabrasSinConsultar[l];
+        palabraBuscada = getPalabra(palabra, listaPalabra);
+        try{
+          numeroDoc = palabraBuscada.getNumeroDoc();
+        }catch(NullPointerException npe){
+          System.out.println("la palabra" + " "+ palabraBuscada + "/" +palabra + " " + "no ha sido contada");
+        }
+        double aux = similitud(palabrasSinConsultarContadas[l], numeroDoc, tamanio);
+        sinConsulta = sinConsulta + Math.pow(aux,2);
       }
-**/
+      sinConsulta = Math.sqrt(sinConsulta);
 
-      System.out.println(doc.getNombre() + "\nSimilitud de palabras consultadas: " + enConsulta + "\nSimilitud de palabras sin consultar: " + 0);//sinConsulta);
+      double similitud = enConsulta/sinConsulta;
+
+      doc.setSimilitud(similitud);
       //imprimir(palabrasEnConsulta, palabrasEnDocumento, palabrasContadas);
     }
+    return mergeSort(lista);
   }
 
   public void cuentaPalabras(String[] palabrasAContar, String[] palabrasDondeContar, int[] palabrasContadas){
@@ -148,18 +149,66 @@ public class Consultas{
     return null;
   }
 
-  public void imprimir(String[] consulta, String[] documento, int[] palabrasContadas){
-    /** imprime todo el documento en una cadena
-    String completa = "";
-    for(String e : documento){
-      completa = completa + e + " ";
+  //mergeSort ordena de menor a mayor, pero se arregla regresando el reverso de la lista.
+  public LinkedList<Documento> mergeSort(LinkedList<Documento> lista){
+	  if(lista.size()<2){
+      return lista;
     }
-    System.out.print(completa + "\n");
-    **/
-
-    for(int i = 0; i<consulta.length; i++){
-      System.out.println(consulta[i] + ": " +palabrasContadas[i]);
+    LinkedList<Documento> izquierdo = new LinkedList<>();
+    LinkedList<Documento> derecho = new LinkedList<>();
+    for(int i = 0; i<lista.size(); i++){
+      Documento doc = lista.get(i);
+      if(i<lista.size()/2){
+		  izquierdo.addLast(doc);
+      }else{
+		  derecho.addLast(doc);
+      }
     }
-
+    return mezcla(mergeSort(izquierdo), mergeSort(derecho));
   }
+
+  public LinkedList<Documento> mezcla(LinkedList<Documento> a, LinkedList<Documento> b){
+	  LinkedList<Documento> resultado = new LinkedList<>();
+	  Documento auxA = a.getFirst();
+	  Documento auxB = b.getFirst();
+
+    double auxASimilitud = auxA.getSimilitud();
+    double auxBSimilitud = auxB.getSimilitud();
+
+	  while(auxA!=null && auxB!=null){
+      if(auxASimilitud > auxBSimilitud){
+	      resultado.addLast(auxA);
+	      a.removeFirst();
+        if(!a.isEmpty()){
+          auxA = a.getFirst();
+          auxASimilitud = auxA.getSimilitud();
+        }else{
+          auxA=null;
+        }
+	    }else{
+	      resultado.addLast(auxB);
+	      b.removeFirst();
+        if(!b.isEmpty()){
+          auxB = b.getFirst();
+          auxBSimilitud = auxB.getSimilitud();
+        }else{
+          auxB=null;
+        }
+      }
+    }
+	  if (auxA == null){
+	    rellena(resultado, b);
+    } else if (auxB == null){
+		  rellena(resultado, a);
+    }
+	  return resultado;
+  }
+
+  public void rellena(LinkedList<Documento> lista, LinkedList<Documento> listaAuxiliar){
+    for(int i = 0; i<listaAuxiliar.size(); i++){
+      Documento doc = listaAuxiliar.get(i);
+      lista.addLast(doc);
+    }
+  }
+
 }

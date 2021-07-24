@@ -4,12 +4,13 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.util.LinkedList;
+import fciencias.edatos.proyecto.Documento;
 
-public class MarcoHistorial extends JFrame{
+public class MarcoResultado extends JFrame{
 
   private JPanel miLamina;
 
-  public MarcoHistorial(){
+  public MarcoResultado(){
     //setBounds(500,200,800,400);
     // este Toolkit permite saber las dimensiones de cualquier
     //pantalla en la que corra el programa y así la ventana sea proporcional a la pantalla
@@ -24,7 +25,7 @@ public class MarcoHistorial extends JFrame{
     miLamina = new JPanel();
     //miLamina.setLayout(new GridLayout(2,1,5,10));
 
-    this.setTitle("Historial de busqueda (solo consultas)");
+    this.setTitle("Resultados de la consulta");
 
     //prueba(miLamina);
 
@@ -36,15 +37,23 @@ public class MarcoHistorial extends JFrame{
     this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
   }
 
-  public void prueba(LinkedList<String> listaHistorial, JPanel miLamina){
-    String palabrasConsultadas = "";
+  public void resultados(LinkedList<Documento> listaDocumentos, JPanel miLamina){
+    //falta ordenar la lista
+    //y limitarla a 10 Documentos
 
-    for(int i = 0; i<listaHistorial.size(); i++){
-      String consulta = listaHistorial.get(i);
-      palabrasConsultadas = consulta + "\n" + palabrasConsultadas;
+    String resultadosGenerados="";
+    int limite = 10;
+    if(listaDocumentos.size()<10){
+      limite = listaDocumentos.size();
     }
+    //lo recorremos al reves por que el merge ordena de menor a mayor
+    for(int i = 0; i<limite; i++){
+      Documento doc = listaDocumentos.get(i);
+      resultadosGenerados = resultadosGenerados + "Nombre:" + doc.getNombre() + " Similitud:"+ doc.getSimilitud() + "\n\n";
+    }
+    resultadosGenerados = resultadosGenerados.replaceAll(".txt", "");
 
-    JTextArea multi = new JTextArea(palabrasConsultadas);
+    JTextArea multi = new JTextArea(resultadosGenerados,10,30);
     multi.setWrapStyleWord(true);
     multi.setLineWrap(true);
     multi.setEditable(false);
