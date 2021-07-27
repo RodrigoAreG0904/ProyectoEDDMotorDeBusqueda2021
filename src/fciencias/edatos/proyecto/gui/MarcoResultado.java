@@ -21,11 +21,11 @@ public class MarcoResultado extends JFrame{
     int altura = tamanioPantalla.height;
     int anchura = tamanioPantalla.width;
 
-    this.setBounds(anchura/4, altura/4, anchura/4, altura/2);
+    this.setBounds(anchura/4, altura/4, anchura/2, altura/2);
     miLamina = new JPanel();
     //miLamina.setLayout(new GridLayout(2,1,5,10));
 
-    this.setTitle("Resultados de la consulta");
+    this.setTitle("Resultados de la consulta (nombres de los documentos)");
 
     //prueba(miLamina);
 
@@ -38,27 +38,28 @@ public class MarcoResultado extends JFrame{
   }
 
   public void resultados(LinkedList<Documento> listaDocumentos, JPanel miLamina){
-    //falta ordenar la lista
-    //y limitarla a 10 Documentos
+    String resultadosGenerados = "";
 
-    String resultadosGenerados="";
-    int limite = 10;
-    if(listaDocumentos.size()<10){
-      limite = listaDocumentos.size();
+    if(!listaDocumentos.isEmpty()){
+      for(int i = 0; i<listaDocumentos.size(); i++){
+        Documento doc = listaDocumentos.get(i);
+        double similitud = doc.getSimilitud();
+        if(similitud > 0){
+          //solo tiene que presentarse el nombre, la similitud es para ver que si lo haga bien
+          resultadosGenerados = resultadosGenerados + doc.getNombre() + "\n\n";
+        }
+      }
+      resultadosGenerados = resultadosGenerados.replaceAll(".txt", "");
+    } else{
+      resultadosGenerados = "Ningun archivo coincide con tu consulta";
     }
-    //lo recorremos al reves por que el merge ordena de menor a mayor
-    for(int i = 0; i<limite; i++){
-      Documento doc = listaDocumentos.get(i);
-      resultadosGenerados = resultadosGenerados + "Nombre:" + doc.getNombre() + " Similitud:"+ doc.getSimilitud() + "\n\n";
-    }
-    resultadosGenerados = resultadosGenerados.replaceAll(".txt", "");
-
-    JTextArea multi = new JTextArea(resultadosGenerados,10,30);
+    JTextArea multi = new JTextArea(resultadosGenerados,20,60);
     multi.setWrapStyleWord(true);
     multi.setLineWrap(true);
     multi.setEditable(false);
 
     miLamina.add(multi);
+    
   }
 
   public JPanel getPanel(){

@@ -10,9 +10,7 @@ public class MarcoHistorial extends JFrame{
   private JPanel miLamina;
 
   public MarcoHistorial(){
-    //setBounds(500,200,800,400);
-    // este Toolkit permite saber las dimensiones de cualquier
-    //pantalla en la que corra el programa y así la ventana sea proporcional a la pantalla
+    
     Toolkit miPantalla = Toolkit.getDefaultToolkit();
 
     Dimension tamanioPantalla = miPantalla.getScreenSize();
@@ -20,7 +18,7 @@ public class MarcoHistorial extends JFrame{
     int altura = tamanioPantalla.height;
     int anchura = tamanioPantalla.width;
 
-    this.setBounds(anchura/4, altura/4, anchura/4, altura/2);
+    this.setBounds(anchura/4, altura/4, anchura/2, altura/2);
     miLamina = new JPanel();
     //miLamina.setLayout(new GridLayout(2,1,5,10));
 
@@ -44,7 +42,7 @@ public class MarcoHistorial extends JFrame{
       palabrasConsultadas = consulta + "\n" + palabrasConsultadas;
     }
 
-    JTextArea multi = new JTextArea(palabrasConsultadas);
+    JTextArea multi = new JTextArea(palabrasConsultadas,20,60);
     multi.setWrapStyleWord(true);
     multi.setLineWrap(true);
     multi.setEditable(false);

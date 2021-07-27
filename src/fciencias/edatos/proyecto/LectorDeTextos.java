@@ -1,6 +1,13 @@
 package fciencias.edatos.proyecto;
 
+import fciencias.edatos.proyecto.Documento;
+import fciencias.edatos.proyecto.PalabraContada;
+import fciencias.edatos.proyecto.gui.MarcoError;
+import java.lang.NullPointerException;
+import java.util.LinkedList;
 import java.text.ParseException;
+import java.text.Normalizer;
+import javax.swing.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -9,29 +16,80 @@ import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.IOException;
-import java.text.Normalizer;
-import java.lang.NullPointerException;
-import java.util.LinkedList;
-import fciencias.edatos.proyecto.Documento;
-import fciencias.edatos.proyecto.PalabraContada;
-import javax.swing.*;
 
 public class LectorDeTextos{
 
+  /** 
+   * Lista de palabras, esta servira para contar en cuantos documentos se encuentra 
+   * cada palabra de todos los documentos una vez cargados. (como una base de datos para 
+   * no tener que calcularlo en cada consulta). 
+   */
   private LinkedList<PalabraContada> listaPalabra = new LinkedList<>();
+
+  /** Lista que contiene a todos los documentos de una carpeta (elegida por el usuario). */
   private LinkedList<Documento> listaDocumento = new LinkedList<>();
+
+  /** 
+   * Una barra de progreso que aparecera al cargar archivos y nos dira cuantos 
+   * archivos lleva cargados, una vez cargados todos aparecera una ventana que 
+   * le indique al usuario que ya se han acabado de cargar. 
+   */
   public JProgressBar barra = new JProgressBar();
 
+  /** 
+   * Metodo que regresa la lista de documentos.
+   * @return listaDocumento. La Lista de documentos.
+   */
+  public LinkedList<Documento> getListaDocumento(){
+    return this.listaDocumento;
+  }
+
+  /** 
+   * Metodo que cambia la lista de documentos.
+   * @param nuevaLista. La Lista de documentos.
+   */
+  public void setListaDocumento(LinkedList<Documento> nuevaLista){
+    this.listaDocumento = nuevaLista;
+  }
+
+  /** 
+   * Metodo que regresa la lista de palabras.
+   * @return listaPalabra. La Lista de palabras.
+   */
+  public LinkedList<PalabraContada> getListaPalabras(){
+    return this.listaPalabra;
+  }
+
+  /** 
+   * Metodo que cambia la lista de palabras.
+   * @param listaPalabra. La Lista de palabras.
+   */
+  public void setListaPalabras(LinkedList<PalabraContada> nuevaLista){
+    this.listaPalabra = nuevaLista;
+  }
+
+  /** 
+   * Metodo que guarda todos los archivos de texo en una lista de Documento.
+   * @param folder. La carpeta de donde se cargaran los archivos.
+   */
   public void cargaArchivos(File folder) throws IOException{
     String path = folder.getAbsolutePath();
     int i= 0;
     barra.setStringPainted(true);
+    
+    String division = "";
+    //Si no tomamos en cuenta esta cadena hay un error.
+    if(path.contains("\\")){
+      division = "\\"; // Esta ruta es para Windows
+    }else{
+      division ="/"; // Esta ruta es para Linux
+    }
 
     try{
       for(File file : folder.listFiles()){
         if(!file.isDirectory()){
           Documento nuevo = new Documento(file.getName(),"");
-          carga(path + "\\"+file.getName(), nuevo);
+          carga(path + division + file.getName(), nuevo);
           listaDocumento.add(0,nuevo);
           i++;
           barra.setString(i + " archivo(s) completado(s)");
@@ -40,10 +98,15 @@ public class LectorDeTextos{
         }
       }
     } catch(NullPointerException npe){
-      System.out.println("La ruta otorgada tiene problemas");
+      MarcoError error = new MarcoError("La ruta otorgada tiene problemas.");
+      error.ocultar();
     }
   }
 
+  /** 
+   * Metodo que guarda las palabras que aparecen en todos los documentos y el 
+   * numero de documentos en donde aparece la palabra.
+   */  
   public void cargaPalabras(){
     for(Documento doc : listaDocumento){
       String cadena = doc.getCadena();
@@ -51,6 +114,7 @@ public class LectorDeTextos{
       cadena = Normalizer.normalize(cadena, Normalizer.Form.NFD);
       cadena = cadena.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
       String[] palabrasEnDocumento = cadena.split("\\s+");
+
       LinkedList<String> sinRepetir = new LinkedList<>();
       //si hay palabras repetidas no las tomamos en cuenta, solo queremos saber
       //en cuantos documentos se encuentra la palabra, no cuantas veces aparece
@@ -79,6 +143,11 @@ public class LectorDeTextos{
     }
   }
 
+  /** 
+   * Metodo que nos dice si en la lista de PalabraContada existe una palabra con el nombre que buscamos.
+   * @param nombre. El nombre con el que buscaremos una palabra en la lista de PalabraContada.
+   * @return true si la lista contiene una palabra con el nombre que nosotros buscamos, false en otro caso.
+   */
   public boolean contiene(String nombre){
     //cuando está vacía.
     if(listaPalabra.isEmpty()){
@@ -104,11 +173,15 @@ public class LectorDeTextos{
     return false;
   }
 
+  /** 
+   * Metodo que regresa una palabra que busca en la lista de PalabraContada.
+   * @return palabra. la palabra que pedimos que busque en la lista de PalabraContada.
+   */
   public PalabraContada getPalabra(String nombreBuscado){
     int j = listaPalabra.size();
     if(j==0){
-      //Poner una ventana de error donde un doc es vacio
-      System.out.println("Esta lista esta vacia, no contiene palabras");
+      MarcoError error = new MarcoError("Esta lista esta vacia, no contiene palabras");
+      error.ocultar();
       return null;
     }
     PalabraContada res;
@@ -120,7 +193,13 @@ public class LectorDeTextos{
     }
     return null;
   }
-
+  
+  /**
+   * Metodo que lee los documentos y guarda su contenido en una cadena concanenandolos.
+   * @param archivo. El archivo que se va a leer y se convertira en Documento.
+   * @param doc. El documento que vamos a usar para guardar todo el texto 
+   * del archivo que estamos leyndo.
+   */
   public void carga(String archivo, Documento doc) throws IOException{
     BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(archivo)));
     String linea = in.readLine();
@@ -131,109 +210,4 @@ public class LectorDeTextos{
     in.close();
   }
 
-  public void imprimeLista(){
-    for(int i=0; i<listaDocumento.size(); i++){
-      Documento aImprimir = listaDocumento.get(i);
-      System.out.println("Nombre del Archivo: " + aImprimir.getNombre() + "\nContenido de Texto: " + aImprimir.getCadena() + "\n");
-
-    }
-  }
-
-  public LinkedList<Documento> getListaDocumento(){
-    return this.listaDocumento;
-  }
-
-  public void setListaDocumento(LinkedList<Documento> nuevaLista){
-    this.listaDocumento = nuevaLista;
-  }
-
-  public LinkedList<PalabraContada> getListaPalabras(){
-    return this.listaPalabra;
-  }
-
-  public void setListaPalabras(LinkedList<PalabraContada> nuevaLista){
-    this.listaPalabra = nuevaLista;
-  }
-
-  public void imprimeNumDoc(){
-    for(int i=0; i<listaPalabra.size(); i++){
-      PalabraContada palabra = listaPalabra.get(i);
-      System.out.println(palabra.getNombre() + " : " +  palabra.getNumeroDoc() +" veces");
-    }
-  }
 }
-
-
-
-
-/**
-package fciencias.edatos.proyecto;
-
-import java.text.ParseException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.IOException;
-import java.lang.NullPointerException;
-import java.util.LinkedList;
-import fciencias.edatos.proyecto.Documento;
-import javax.swing.*;
-
-public class LectorDeTextos{
-
-  private LinkedList<Documento> listaDocumento = new LinkedList<>();
-  public JProgressBar barra = new JProgressBar();
-
-  public void cargaArchivos(File folder) throws IOException{
-    String path = folder.getAbsolutePath();
-    int i= 0;
-    barra.setStringPainted(true);
-
-    try{
-      for(File file : folder.listFiles()){
-        if(!file.isDirectory()){
-          Documento nuevo = new Documento(file.getName(),"");
-          carga(path + "\\"+file.getName(), nuevo);
-          listaDocumento.add(0,nuevo);
-          i++;
-          barra.setString(i + " archivo(s) completado(s)");
-        } else {
-          cargaArchivos(file);
-        }
-      }
-    } catch(NullPointerException npe){
-      System.out.println("La ruta otorgada tiene problemas");
-    }
-  }
-
-  public void carga(String archivo, Documento doc) throws IOException{
-    BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(archivo)));
-    String linea = in.readLine();
-    while(linea != null){
-      doc.concatenaCadena(linea);
-      linea = in.readLine();
-    }
-    in.close();
-  }
-
-  public void imprimeLista(){
-    for(int i=0; i<listaDocumento.size(); i++){
-      Documento aImprimir = listaDocumento.get(i);
-      System.out.println("Nombre del Archivo: " + aImprimir.getNombre() + "\nContenido de Texto: " + aImprimir.getCadena() + "\n");
-
-    }
-  }
-
-  public LinkedList<Documento> getLista(){
-    return this.listaDocumento;
-  }
-
-  public void setLista(LinkedList<Documento> nuevaLista){
-    this.listaDocumento = nuevaLista;
-  }
-}
-*/

@@ -1,3 +1,5 @@
+<Comentario aqui hay que poner cosas que hicimos en el proyecto y como usarlo>
+
 ##Normalizer.normalize(texto, Normalizer.Form.NFD);##
 
 Según el API de la Jdk los métodos normalize de java.text.Normalizer transforman un texto Unicode en su representación compuesta o descompuesta, lo que nos permite poder buscar y ordenar textos de una forma más sencilla después de la transformación.

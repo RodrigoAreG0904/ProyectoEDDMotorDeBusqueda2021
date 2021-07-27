@@ -2,9 +2,9 @@ package fciencias.edatos.proyecto;
 
 public class PalabraContada{
 
-  //el nombre de la palabra
+  /** El nombre de la palabra*/
   private String nombre;
-  //numero de veces que aparece en un documento
+  /** El nombre del documento. */
   private int numeroOcu;
   //numero de documentos en donde aparece
   private int numeroDoc;

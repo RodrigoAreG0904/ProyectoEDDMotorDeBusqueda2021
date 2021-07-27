@@ -5,7 +5,7 @@ import fciencias.edatos.proyecto.gui.MarcoRuta;
 import java.io.IOException;
 import fciencias.edatos.proyecto.LectorDeTextos;
 
-public class Main /*extends JButton */{
+public class Main{
 
   public static void main(String[] args) throws IOException{
 
