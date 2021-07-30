@@ -10,7 +10,7 @@ public class MarcoHistorial extends JFrame{
   private JPanel miLamina;
 
   public MarcoHistorial(){
-    
+
     Toolkit miPantalla = Toolkit.getDefaultToolkit();
 
     Dimension tamanioPantalla = miPantalla.getScreenSize();
@@ -20,11 +20,8 @@ public class MarcoHistorial extends JFrame{
 
     this.setBounds(anchura/4, altura/4, anchura/2, altura/2);
     miLamina = new JPanel();
-    //miLamina.setLayout(new GridLayout(2,1,5,10));
 
     this.setTitle("Historial de busqueda (solo consultas)");
-
-    //prueba(miLamina);
 
     this.add(miLamina);
     this.setVisible(true);

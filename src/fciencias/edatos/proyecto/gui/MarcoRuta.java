@@ -13,7 +13,7 @@ public class MarcoRuta extends JFrame{
 
   private LectorDeTextos ldt = new LectorDeTextos();
 
-  
+
   public MarcoRuta(){
     // este Toolkit permite saber las dimensiones de cualquier
     //pantalla en la que corra el programa y así la ventana sea proporcional a la pantalla
@@ -58,12 +58,9 @@ public class MarcoRuta extends JFrame{
             ldt.cargaArchivos(folder);
             ldt.cargaPalabras();
           } catch(IOException ioe){
-            System.out.println("Ha habido un error.");
             MarcoError error = new MarcoError("Ha habido un problema de entrada y salida de archivos");
             error.ocultar();
           }
-          MarcoExito exito = new MarcoExito("Los archivos se han cargado con exito");
-          exito.ocultar();
         }
       }
     });

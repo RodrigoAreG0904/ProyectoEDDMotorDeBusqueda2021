@@ -3,6 +3,7 @@ package fciencias.edatos.proyecto;
 import fciencias.edatos.proyecto.Documento;
 import fciencias.edatos.proyecto.PalabraContada;
 import fciencias.edatos.proyecto.gui.MarcoError;
+import fciencias.edatos.proyecto.gui.MarcoExito;
 import java.lang.NullPointerException;
 import java.util.LinkedList;
 import java.text.ParseException;
@@ -19,24 +20,24 @@ import java.io.IOException;
 
 public class LectorDeTextos{
 
-  /** 
-   * Lista de palabras, esta servira para contar en cuantos documentos se encuentra 
-   * cada palabra de todos los documentos una vez cargados. (como una base de datos para 
-   * no tener que calcularlo en cada consulta). 
+  /**
+   * Lista de palabras, esta servira para contar en cuantos documentos se encuentra
+   * cada palabra de todos los documentos una vez cargados. (como una base de datos para
+   * no tener que calcularlo en cada consulta).
    */
   private LinkedList<PalabraContada> listaPalabra = new LinkedList<>();
 
   /** Lista que contiene a todos los documentos de una carpeta (elegida por el usuario). */
   private LinkedList<Documento> listaDocumento = new LinkedList<>();
 
-  /** 
-   * Una barra de progreso que aparecera al cargar archivos y nos dira cuantos 
-   * archivos lleva cargados, una vez cargados todos aparecera una ventana que 
-   * le indique al usuario que ya se han acabado de cargar. 
+  /**
+   * Una barra de progreso que aparecera al cargar archivos y nos dira cuantos
+   * archivos lleva cargados, una vez cargados todos aparecera una ventana que
+   * le indique al usuario que ya se han acabado de cargar.
    */
   public JProgressBar barra = new JProgressBar();
 
-  /** 
+  /**
    * Metodo que regresa la lista de documentos.
    * @return listaDocumento. La Lista de documentos.
    */
@@ -44,7 +45,7 @@ public class LectorDeTextos{
     return this.listaDocumento;
   }
 
-  /** 
+  /**
    * Metodo que cambia la lista de documentos.
    * @param nuevaLista. La Lista de documentos.
    */
@@ -52,7 +53,7 @@ public class LectorDeTextos{
     this.listaDocumento = nuevaLista;
   }
 
-  /** 
+  /**
    * Metodo que regresa la lista de palabras.
    * @return listaPalabra. La Lista de palabras.
    */
@@ -60,7 +61,7 @@ public class LectorDeTextos{
     return this.listaPalabra;
   }
 
-  /** 
+  /**
    * Metodo que cambia la lista de palabras.
    * @param listaPalabra. La Lista de palabras.
    */
@@ -68,7 +69,7 @@ public class LectorDeTextos{
     this.listaPalabra = nuevaLista;
   }
 
-  /** 
+  /**
    * Metodo que guarda todos los archivos de texo en una lista de Documento.
    * @param folder. La carpeta de donde se cargaran los archivos.
    */
@@ -76,7 +77,7 @@ public class LectorDeTextos{
     String path = folder.getAbsolutePath();
     int i= 0;
     barra.setStringPainted(true);
-    
+
     String division = "";
     //Si no tomamos en cuenta esta cadena hay un error.
     if(path.contains("\\")){
@@ -103,11 +104,12 @@ public class LectorDeTextos{
     }
   }
 
-  /** 
-   * Metodo que guarda las palabras que aparecen en todos los documentos y el 
+  /**
+   * Metodo que guarda las palabras que aparecen en todos los documentos y el
    * numero de documentos en donde aparece la palabra.
-   */  
+   */
   public void cargaPalabras(){
+    LinkedList<String> sinRepetir = new LinkedList<>();
     for(Documento doc : listaDocumento){
       String cadena = doc.getCadena();
       cadena = cadena.replaceAll("[¿¡?!,.;:]*", "");
@@ -115,7 +117,7 @@ public class LectorDeTextos{
       cadena = cadena.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
       String[] palabrasEnDocumento = cadena.split("\\s+");
 
-      LinkedList<String> sinRepetir = new LinkedList<>();
+      sinRepetir = new LinkedList<>();
       //si hay palabras repetidas no las tomamos en cuenta, solo queremos saber
       //en cuantos documentos se encuentra la palabra, no cuantas veces aparece
       for(int i=0; i<palabrasEnDocumento.length; i++){
@@ -141,9 +143,16 @@ public class LectorDeTextos{
         }
       }
     }
+    if(sinRepetir.size()<=0){
+      MarcoError error = new MarcoError("No se han cargado archivos, o el ultimo documento esta vacio.");
+      error.ocultar();
+    }else{
+      MarcoExito exito = new MarcoExito("Los archivos se han cargado con exito");
+      exito.ocultar();
+    }
   }
 
-  /** 
+  /**
    * Metodo que nos dice si en la lista de PalabraContada existe una palabra con el nombre que buscamos.
    * @param nombre. El nombre con el que buscaremos una palabra en la lista de PalabraContada.
    * @return true si la lista contiene una palabra con el nombre que nosotros buscamos, false en otro caso.
@@ -173,7 +182,7 @@ public class LectorDeTextos{
     return false;
   }
 
-  /** 
+  /**
    * Metodo que regresa una palabra que busca en la lista de PalabraContada.
    * @return palabra. la palabra que pedimos que busque en la lista de PalabraContada.
    */
@@ -193,11 +202,11 @@ public class LectorDeTextos{
     }
     return null;
   }
-  
+
   /**
    * Metodo que lee los documentos y guarda su contenido en una cadena concanenandolos.
    * @param archivo. El archivo que se va a leer y se convertira en Documento.
-   * @param doc. El documento que vamos a usar para guardar todo el texto 
+   * @param doc. El documento que vamos a usar para guardar todo el texto
    * del archivo que estamos leyndo.
    */
   public void carga(String archivo, Documento doc) throws IOException{

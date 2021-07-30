@@ -40,17 +40,16 @@ public class MarcoResultado extends JFrame{
   public void resultados(LinkedList<Documento> listaDocumentos, JPanel miLamina){
     String resultadosGenerados = "";
 
-    if(!listaDocumentos.isEmpty()){
-      for(int i = 0; i<listaDocumentos.size(); i++){
-        Documento doc = listaDocumentos.get(i);
-        double similitud = doc.getSimilitud();
-        if(similitud > 0){
-          //solo tiene que presentarse el nombre, la similitud es para ver que si lo haga bien
-          resultadosGenerados = resultadosGenerados + doc.getNombre() + "\n\n";
-        }
+    for(int i = 0; i<listaDocumentos.size(); i++){
+      Documento doc = listaDocumentos.get(i);
+      double similitud = doc.getSimilitud();
+      if(similitud > 0){
+        //solo tiene que presentarse el nombre, la similitud es para ver que si lo haga bien
+        resultadosGenerados = resultadosGenerados + doc.getNombre() +"\n\n";
       }
-      resultadosGenerados = resultadosGenerados.replaceAll(".txt", "");
-    } else{
+    }
+    resultadosGenerados = resultadosGenerados.replaceAll(".txt", "");
+    if(resultadosGenerados.equals("")){
       resultadosGenerados = "Ningun archivo coincide con tu consulta";
     }
     JTextArea multi = new JTextArea(resultadosGenerados,20,60);
@@ -59,7 +58,7 @@ public class MarcoResultado extends JFrame{
     multi.setEditable(false);
 
     miLamina.add(multi);
-    
+
   }
 
   public JPanel getPanel(){
